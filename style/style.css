@@ -205,22 +205,7 @@ th {
     padding: 1rem;
     text-align: left;
     font-weight: 500;
-}
-
-th button {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
     font-size: 0.95rem;
-    font-weight: 500;
-}
-
-th button:hover {
-    text-decoration: underline;
 }
 
 td {
@@ -289,27 +274,25 @@ tbody tr:hover {
     cursor: not-allowed;
 }
 
-.breadcrumb {
-    list-style: none;
-    display: flex;
+.btn-back {
+    background: transparent;
+    border: 1px solid #cfd8dc;
+    color: #546e7a;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
     gap: 0.5rem;
-    margin-bottom: 2rem;
     font-size: 0.95rem;
+    margin-bottom: 2rem;
+    transition: all 0.2s;
 }
 
-.breadcrumb li:not(:last-child)::after {
-    content: "/";
-    margin-left: 0.5rem;
-    color: #90a4ae;
-}
-
-.breadcrumb a {
+.btn-back:hover {
+    background: #eceff1;
+    border-color: #00acc1;
     color: #00acc1;
-    text-decoration: none;
-}
-
-.breadcrumb a:hover {
-    text-decoration: underline;
 }
 
 .form-grid {

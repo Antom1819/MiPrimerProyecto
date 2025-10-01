@@ -21,7 +21,7 @@
 
     <main>
         <header>
-            <p>Carolina Fernández Echeverry</p>
+            <p>Antonio Orangel Villarreal Vasquez</p>
             <button class="user-btn" aria-label="Menú de usuario">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="8" r="4"/>
@@ -98,42 +98,12 @@
                 <table>
                     <thead>
                         <tr>
-                            <th scope="col">
-                                <button type="button" aria-label="Ordenar por código">
-                                    Código
-                                    <span aria-hidden="true">↕</span>
-                                </button>
-                            </th>
-                            <th scope="col">
-                                <button type="button" aria-label="Ordenar por identificación">
-                                    Identificación
-                                    <span aria-hidden="true">↕</span>
-                                </button>
-                            </th>
-                            <th scope="col">
-                                <button type="button" aria-label="Ordenar por estudiante">
-                                    Estudiante
-                                    <span aria-hidden="true">↕</span>
-                                </button>
-                            </th>
-                            <th scope="col">
-                                <button type="button" aria-label="Ordenar por grado">
-                                    Grado
-                                    <span aria-hidden="true">↕</span>
-                                </button>
-                            </th>
-                            <th scope="col">
-                                <button type="button" aria-label="Ordenar por grupo">
-                                    Grupo
-                                    <span aria-hidden="true">↕</span>
-                                </button>
-                            </th>
-                            <th scope="col">
-                                <button type="button" aria-label="Ordenar por estado">
-                                    Estado
-                                    <span aria-hidden="true">↕</span>
-                                </button>
-                            </th>
+                            <th scope="col">Código</th>
+                            <th scope="col">Identificación</th>
+                            <th scope="col">Estudiante</th>
+                            <th scope="col">Grado</th>
+                            <th scope="col">Grupo</th>
+                            <th scope="col">Estado</th>
                             <th scope="col">Acciones</th>
                         </tr>
                     </thead>
@@ -156,12 +126,12 @@
         </section>
 
         <section id="student-detail" hidden>
-            <nav aria-label="Breadcrumb">
-                <ol class="breadcrumb">
-                    <li><a href="#" id="back-to-list">Administración de estudiantes</a></li>
-                    <li aria-current="page">Estudiante</li>
-                </ol>
-            </nav>
+            <button type="button" id="back-to-list" class="btn-back">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Volver
+            </button>
 
             <h2>Información del estudiante</h2>
 
@@ -293,42 +263,12 @@
                 <table>
                     <thead>
                         <tr>
-                            <th scope="col">
-                                <button type="button" aria-label="Ordenar por código">
-                                    Código
-                                    <span aria-hidden="true">↕</span>
-                                </button>
-                            </th>
-                            <th scope="col">
-                                <button type="button" aria-label="Ordenar por año">
-                                    Año
-                                    <span aria-hidden="true">↕</span>
-                                </button>
-                            </th>
-                            <th scope="col">
-                                <button type="button" aria-label="Ordenar por grado">
-                                    Grado
-                                    <span aria-hidden="true">↕</span>
-                                </button>
-                            </th>
-                            <th scope="col">
-                                <button type="button" aria-label="Ordenar por grupo">
-                                    Grupo
-                                    <span aria-hidden="true">↕</span>
-                                </button>
-                            </th>
-                            <th scope="col">
-                                <button type="button" aria-label="Ordenar por estado">
-                                    Estado
-                                    <span aria-hidden="true">↕</span>
-                                </button>
-                            </th>
-                            <th scope="col">
-                                <button type="button" aria-label="Ordenar por nota promedio">
-                                    Nota promedio
-                                    <span aria-hidden="true">↕</span>
-                                </button>
-                            </th>
+                            <th scope="col">Código</th>
+                            <th scope="col">Año</th>
+                            <th scope="col">Grado</th>
+                            <th scope="col">Grupo</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Nota promedio</th>
                         </tr>
                     </thead>
                     <tbody id="courses-tbody">
