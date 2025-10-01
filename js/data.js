@@ -1,4 +1,4 @@
-// Base de datos de estudiantes colombianos
+// BD
 window.estudiantes = [
     {
         codigo: '2022101',

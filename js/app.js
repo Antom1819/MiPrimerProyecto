@@ -1,20 +1,20 @@
-// Esperar a que el DOM esté completamente cargado
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM cargado');
     console.log('Estudiantes disponibles:', window.estudiantes ? window.estudiantes.length : 0);
     
-    // Verificar que los datos estén cargados
+    // Verificacion de datos cargados
     if (!window.estudiantes) {
         console.error('Error: No se cargaron los datos de estudiantes');
         return;
     }
     
-    // Inicializar la aplicación
+    
     renderizarEstudiantes();
     inicializarEventos();
 });
 
-// Renderizar tabla de estudiantes
+//tabla de estudiantes
 function renderizarEstudiantes() {
     const tbody = document.getElementById('students-tbody');
     
@@ -55,7 +55,7 @@ function renderizarEstudiantes() {
     console.log('Tabla renderizada con', window.estudiantes.length, 'estudiantes');
 }
 
-// Ver detalles del estudiante
+//detalles del estudiante
 function verEstudiante(codigo) {
     const estudiante = window.estudiantes.find(e => e.codigo === codigo);
     if (!estudiante) {
@@ -63,11 +63,11 @@ function verEstudiante(codigo) {
         return;
     }
 
-    // Ocultar lista y mostrar detalle
+
     document.getElementById('student-list').hidden = true;
     document.getElementById('student-detail').hidden = false;
 
-    // Llenar formulario con datos del estudiante
+    
     document.getElementById('student-code').value = estudiante.codigo;
     document.getElementById('student-id-type').value = estudiante.tipoId;
     document.getElementById('student-id-number').value = estudiante.numeroId;
@@ -76,7 +76,7 @@ function verEstudiante(codigo) {
     document.getElementById('student-first-surname').value = estudiante.primerApellido;
     document.getElementById('student-second-surname').value = estudiante.segundoApellido || '';
     
-    // Seleccionar género
+    // Seleccionar gnero
     const radioGenero = document.querySelector(`input[name="gender"][value="${estudiante.genero}"]`);
     if (radioGenero) radioGenero.checked = true;
     
@@ -89,7 +89,7 @@ function verEstudiante(codigo) {
     document.getElementById('student-grade').value = estudiante.grado;
     document.getElementById('student-group').value = estudiante.grupo;
 
-    // Renderizar cursos
+    // Cursos
     const cursosTbody = document.getElementById('courses-tbody');
     if (estudiante.cursos && estudiante.cursos.length > 0) {
         cursosTbody.innerHTML = estudiante.cursos.map(curso => `
@@ -106,11 +106,11 @@ function verEstudiante(codigo) {
         cursosTbody.innerHTML = '<tr><td colspan="6">No hay cursos registrados</td></tr>';
     }
 
-    // Scroll al inicio
+    
     window.scrollTo(0, 0);
 }
 
-// Eliminar estudiante
+// Eliminar 
 function eliminarEstudiante(codigo) {
     if (confirm('¿Está seguro de que desea eliminar este estudiante?')) {
         const index = window.estudiantes.findIndex(e => e.codigo === codigo);
@@ -122,9 +122,9 @@ function eliminarEstudiante(codigo) {
     }
 }
 
-// Inicializar eventos
+
 function inicializarEventos() {
-    // Volver a la lista de estudiantes
+    
     const backToListBtn = document.getElementById('back-to-list');
     if (backToListBtn) {
         backToListBtn.addEventListener('click', function(e) {
@@ -135,17 +135,17 @@ function inicializarEventos() {
         });
     }
 
-    // Evento para formulario de búsqueda
+    
     const searchForm = document.querySelector('form[role="search"]');
     if (searchForm) {
         searchForm.addEventListener('submit', function(e) {
             e.preventDefault();
             console.log('Buscando...');
-            // Aquí puedes implementar la lógica de filtrado
+            
         });
     }
 
-    // Evento para limpiar filtros
+    
     const resetBtn = document.querySelector('button[type="reset"]');
     if (resetBtn) {
         resetBtn.addEventListener('click', function() {
@@ -153,11 +153,11 @@ function inicializarEventos() {
         });
     }
 
-    // Botón nuevo estudiante
+    
     const btnNewStudent = document.getElementById('btn-new-student');
     if (btnNewStudent) {
         btnNewStudent.addEventListener('click', function() {
-            // Mostrar formulario vacío para nuevo estudiante
+            
             document.getElementById('student-list').hidden = true;
             document.getElementById('student-detail').hidden = false;
             document.getElementById('student-form').reset();
