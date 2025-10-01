@@ -1,321 +1,168 @@
-// app.js - Funcionalidad principal de la aplicación
-
-// Estado de la aplicación
-const appState = {
-    currentView: 'list',
-    currentStudent: null,
-    filteredStudents: [...estudiantes],
-    currentPage: 1,
-    itemsPerPage: 4,
-    coursesPerPage: 4
-};
-
-// Elementos del DOM
-const elements = {
-    studentListView: document.getElementById('studentListView'),
-    studentDetailView: document.getElementById('studentDetailView'),
-    studentsTableBody: document.getElementById('studentsTableBody'),
-    coursesTableBody: document.getElementById('coursesTableBody'),
-    filtersForm: document.getElementById('filtersForm'),
-    btnClearFilters: document.getElementById('btnClearFilters'),
-    breadcrumbCurrent: document.getElementById('breadcrumbCurrent'),
-    resultsPerPage: document.getElementById('resultsPerPage'),
-    coursesPerPage: document.getElementById('coursesPerPage')
-};
-
-// Inicializar la aplicación
-function init() {
-    renderStudentList();
-    attachEventListeners();
-}
-
-// Adjuntar eventos
-function attachEventListeners() {
-    // Filtros
-    elements.filtersForm.addEventListener('submit', handleFilterSubmit);
-    elements.btnClearFilters.addEventListener('click', handleClearFilters);
+// Esperar a que el DOM esté completamente cargado
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM cargado');
+    console.log('Estudiantes disponibles:', window.estudiantes ? window.estudiantes.length : 0);
     
-    // Paginación
-    elements.resultsPerPage.addEventListener('change', handleResultsPerPageChange);
-    
-    // Navegación del sidebar
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        link.addEventListener('click', handleNavClick);
-    });
-}
-
-// Manejar click en navegación
-function handleNavClick(e) {
-    e.preventDefault();
-    
-    // Remover clase active de todos los links
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => link.classList.remove('active'));
-    
-    // Agregar clase active al link clickeado
-    e.target.classList.add('active');
-}
-
-// Renderizar lista de estudiantes
-function renderStudentList() {
-    const tbody = elements.studentsTableBody;
-    tbody.innerHTML = '';
-    
-    const start = (appState.currentPage - 1) * appState.itemsPerPage;
-    const end = start + appState.itemsPerPage;
-    const paginatedStudents = appState.filteredStudents.slice(start, end);
-    
-    if (paginatedStudents.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No se encontraron estudiantes</td></tr>';
+    // Verificar que los datos estén cargados
+    if (!window.estudiantes) {
+        console.error('Error: No se cargaron los datos de estudiantes');
         return;
     }
     
-    paginatedStudents.forEach(student => {
-        const row = createStudentRow(student);
-        tbody.appendChild(row);
-    });
-    
-    updatePaginationInfo();
-}
+    // Inicializar la aplicación
+    renderizarEstudiantes();
+    inicializarEventos();
+});
 
-// Crear fila de estudiante
-function createStudentRow(student) {
-    const row = document.createElement('tr');
+// Renderizar tabla de estudiantes
+function renderizarEstudiantes() {
+    const tbody = document.getElementById('students-tbody');
     
-    row.innerHTML = `
-        <td>${student.codigo}</td>
-        <td>${student.tipoId} ${student.numeroDocumento}</td>
-        <td>${student.nombreCompleto}</td>
-        <td>${student.grado}</td>
-        <td>${student.grupo}</td>
-        <td>${student.estado}</td>
-        <td>
-            <div class="action-buttons">
-                <button class="btn-icon btn-view" data-codigo="${student.codigo}" aria-label="Ver información del estudiante">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M10 4C5 4 1.73 7.11 1 10c.73 2.89 4 6 9 6s8.27-3.11 9-6c-.73-2.89-4-6-9-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="currentColor"/>
-                    </svg>
-                </button>
-                <button class="btn-icon btn-delete" data-codigo="${student.codigo}" aria-label="Eliminar estudiante">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6 2h8v2H6V2zm9 2H5c-.55 0-1 .45-1 1v1h12V5c0-.55-.45-1-1-1zm-1 3H6v10c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V7z" fill="currentColor"/>
-                    </svg>
-                </button>
-            </div>
-        </td>
-    `;
-    
-    // Agregar eventos a los botones
-    const btnView = row.querySelector('.btn-view');
-    const btnDelete = row.querySelector('.btn-delete');
-    
-    btnView.addEventListener('click', () => showStudentDetail(student.codigo));
-    btnDelete.addEventListener('click', () => deleteStudent(student.codigo));
-    
-    return row;
-}
-
-// Mostrar detalle del estudiante
-function showStudentDetail(codigo) {
-    const student = estudiantes.find(s => s.codigo === codigo);
-    
-    if (!student) {
-        console.error('Estudiante no encontrado');
+    if (!tbody) {
+        console.error('No se encontró el elemento tbody');
         return;
     }
     
-    appState.currentStudent = student;
-    appState.currentView = 'detail';
+    if (!window.estudiantes || window.estudiantes.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7">No hay estudiantes registrados</td></tr>';
+        return;
+    }
     
-    // Ocultar vista de lista y mostrar vista de detalle
-    elements.studentListView.classList.add('hidden');
-    elements.studentDetailView.classList.remove('hidden');
+    tbody.innerHTML = window.estudiantes.map(estudiante => `
+        <tr>
+            <td>${estudiante.codigo}</td>
+            <td>${estudiante.tipoId} ${estudiante.numeroId}</td>
+            <td>${estudiante.nombre}</td>
+            <td>${estudiante.grado}</td>
+            <td>${estudiante.grupo}</td>
+            <td>${estudiante.estado}</td>
+            <td class="actions">
+                <button type="button" class="action-btn" onclick="verEstudiante('${estudiante.codigo}')" aria-label="Ver detalles de ${estudiante.nombre}">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </button>
+                <button type="button" class="action-btn" onclick="eliminarEstudiante('${estudiante.codigo}')" aria-label="Eliminar ${estudiante.nombre}">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                    </svg>
+                </button>
+            </td>
+        </tr>
+    `).join('');
     
-    // Actualizar breadcrumb
-    elements.breadcrumbCurrent.textContent = student.nombreCompleto;
-    
+    console.log('Tabla renderizada con', window.estudiantes.length, 'estudiantes');
+}
+
+// Ver detalles del estudiante
+function verEstudiante(codigo) {
+    const estudiante = window.estudiantes.find(e => e.codigo === codigo);
+    if (!estudiante) {
+        console.error('Estudiante no encontrado:', codigo);
+        return;
+    }
+
+    // Ocultar lista y mostrar detalle
+    document.getElementById('student-list').hidden = true;
+    document.getElementById('student-detail').hidden = false;
+
     // Llenar formulario con datos del estudiante
-    fillStudentForm(student);
+    document.getElementById('student-code').value = estudiante.codigo;
+    document.getElementById('student-id-type').value = estudiante.tipoId;
+    document.getElementById('student-id-number').value = estudiante.numeroId;
+    document.getElementById('student-first-name').value = estudiante.primerNombre;
+    document.getElementById('student-second-name').value = estudiante.segundoNombre || '';
+    document.getElementById('student-first-surname').value = estudiante.primerApellido;
+    document.getElementById('student-second-surname').value = estudiante.segundoApellido || '';
     
+    // Seleccionar género
+    const radioGenero = document.querySelector(`input[name="gender"][value="${estudiante.genero}"]`);
+    if (radioGenero) radioGenero.checked = true;
+    
+    document.getElementById('student-birthdate').value = estudiante.fechaNacimiento;
+    document.getElementById('student-phone').value = estudiante.telefonoFijo || '';
+    document.getElementById('student-mobile').value = estudiante.celular;
+    document.getElementById('student-gmail').value = estudiante.gmail;
+    document.getElementById('student-city').value = estudiante.ciudad;
+    document.getElementById('student-address').value = estudiante.direccion;
+    document.getElementById('student-grade').value = estudiante.grado;
+    document.getElementById('student-group').value = estudiante.grupo;
+
     // Renderizar cursos
-    renderCoursesList(student.cursos);
-}
-
-// Llenar formulario con datos del estudiante
-function fillStudentForm(student) {
-    document.getElementById('codigo').value = student.codigo;
-    document.getElementById('tipoIdentificacion').value = student.tipoId;
-    document.getElementById('numeroDocumento').value = student.numeroDocumento;
-    document.getElementById('primerNombre').value = student.primerNombre;
-    document.getElementById('segundoNombre').value = student.segundoNombre;
-    document.getElementById('primerApellido').value = student.primerApellido;
-    document.getElementById('segundoApellido').value = student.segundoApellido;
-    
-    // Seleccionar sexo
-    const radioSexo = document.querySelector(`input[name="sexo"][value="${student.sexo}"]`);
-    if (radioSexo) {
-        radioSexo.checked = true;
+    const cursosTbody = document.getElementById('courses-tbody');
+    if (estudiante.cursos && estudiante.cursos.length > 0) {
+        cursosTbody.innerHTML = estudiante.cursos.map(curso => `
+            <tr>
+                <td>${curso.codigo}</td>
+                <td>${curso.año}</td>
+                <td>${curso.grado}</td>
+                <td>${curso.grupo}</td>
+                <td>${curso.estado}</td>
+                <td>${curso.promedio || '-'}</td>
+            </tr>
+        `).join('');
+    } else {
+        cursosTbody.innerHTML = '<tr><td colspan="6">No hay cursos registrados</td></tr>';
     }
-    
-    document.getElementById('fechaNacimiento').value = student.fechaNacimiento;
-    document.getElementById('telefonoResidencia').value = student.telefonoResidencia;
-    document.getElementById('celular').value = student.celular;
-    document.getElementById('correo').value = student.correo;
-    document.getElementById('ciudadResidencia').value = student.ciudadResidencia;
-    document.getElementById('direccion').value = student.direccion;
-    document.getElementById('grado').value = student.grado;
-    document.getElementById('grupo').value = student.grupo;
-}
 
-// Renderizar lista de cursos
-function renderCoursesList(cursos) {
-    const tbody = elements.coursesTableBody;
-    tbody.innerHTML = '';
-    
-    if (!cursos || cursos.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No hay cursos registrados</td></tr>';
-        return;
-    }
-    
-    cursos.forEach(curso => {
-        const row = createCourseRow(curso);
-        tbody.appendChild(row);
-    });
-}
-
-// Crear fila de curso
-function createCourseRow(curso) {
-    const row = document.createElement('tr');
-    
-    const notaDisplay = curso.notaPromedio !== null ? curso.notaPromedio : '';
-    const estadoDisplay = curso.estado;
-    const estadoSelect = curso.estado === 'En curso' 
-        ? `<select class="estado-select">
-            <option value="En curso" selected>En curso</option>
-            <option value="Aprobado">Aprobado</option>
-            <option value="Reprobado">Reprobado</option>
-           </select>`
-        : estadoDisplay;
-    
-    row.innerHTML = `
-        <td>${curso.codigo}</td>
-        <td>${curso.año}</td>
-        <td>${curso.grado}</td>
-        <td>${curso.grupo}</td>
-        <td>${estadoSelect}</td>
-        <td>${notaDisplay}</td>
-    `;
-    
-    return row;
+    // Scroll al inicio
+    window.scrollTo(0, 0);
 }
 
 // Eliminar estudiante
-function deleteStudent(codigo) {
-    const confirmDelete = confirm('¿Está seguro que desea eliminar este estudiante?');
-    
-    if (confirmDelete) {
-        // Encontrar índice del estudiante en el array original
-        const index = estudiantes.findIndex(s => s.codigo === codigo);
-        
+function eliminarEstudiante(codigo) {
+    if (confirm('¿Está seguro de que desea eliminar este estudiante?')) {
+        const index = window.estudiantes.findIndex(e => e.codigo === codigo);
         if (index !== -1) {
-            // Eliminar del array
-            estudiantes.splice(index, 1);
-            
-            // Actualizar lista filtrada
-            applyFilters();
-            
-            // Re-renderizar
-            renderStudentList();
-            
-            alert('Estudiante eliminado correctamente');
+            window.estudiantes.splice(index, 1);
+            renderizarEstudiantes();
+            console.log('Estudiante eliminado');
         }
     }
 }
 
-// Manejar envío de filtros
-function handleFilterSubmit(e) {
-    e.preventDefault();
-    applyFilters();
-    appState.currentPage = 1;
-    renderStudentList();
-}
-
-// Aplicar filtros
-function applyFilters() {
-    const formData = new FormData(elements.filtersForm);
-    
-    const filters = {
-        grado: formData.get('grado'),
-        grupo: formData.get('grupo'),
-        tipoId: formData.get('tipoId'),
-        numeroDoc: formData.get('numeroDoc'),
-        estudiante: formData.get('estudiante')
-    };
-    
-    appState.filteredStudents = estudiantes.filter(student => {
-        if (filters.grado && student.grado !== filters.grado) return false;
-        if (filters.grupo && student.grupo !== filters.grupo) return false;
-        if (filters.tipoId && student.tipoId !== filters.tipoId) return false;
-        if (filters.numeroDoc && !student.numeroDocumento.includes(filters.numeroDoc)) return false;
-        if (filters.estudiante && student.codigo !== filters.estudiante) return false;
-        
-        return true;
-    });
-}
-
-// Limpiar filtros
-function handleClearFilters() {
-    elements.filtersForm.reset();
-    appState.filteredStudents = [...estudiantes];
-    appState.currentPage = 1;
-    renderStudentList();
-}
-
-// Cambiar cantidad de resultados por página
-function handleResultsPerPageChange(e) {
-    appState.itemsPerPage = parseInt(e.target.value);
-    appState.currentPage = 1;
-    renderStudentList();
-}
-
-// Actualizar información de paginación
-function updatePaginationInfo() {
-    const total = appState.filteredStudents.length;
-    const start = (appState.currentPage - 1) * appState.itemsPerPage + 1;
-    const end = Math.min(start + appState.itemsPerPage - 1, total);
-    
-    const paginationInfo = document.getElementById('paginationInfo');
-    if (paginationInfo) {
-        paginationInfo.textContent = `${start} al ${end} de ${total} registros`;
+// Inicializar eventos
+function inicializarEventos() {
+    // Volver a la lista de estudiantes
+    const backToListBtn = document.getElementById('back-to-list');
+    if (backToListBtn) {
+        backToListBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('student-detail').hidden = true;
+            document.getElementById('student-list').hidden = false;
+            window.scrollTo(0, 0);
+        });
     }
-}
 
-// Volver a la lista desde el detalle
-function goBackToList() {
-    appState.currentView = 'list';
-    appState.currentStudent = null;
-    
-    elements.studentDetailView.classList.add('hidden');
-    elements.studentListView.classList.remove('hidden');
-    
-    elements.breadcrumbCurrent.textContent = 'Estudiante';
-}
+    // Evento para formulario de búsqueda
+    const searchForm = document.querySelector('form[role="search"]');
+    if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Buscando...');
+            // Aquí puedes implementar la lógica de filtrado
+        });
+    }
 
-// Agregar evento al breadcrumb para volver
-const breadcrumbLink = document.querySelector('.breadcrumb-link');
-if (breadcrumbLink) {
-    breadcrumbLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (appState.currentView === 'detail') {
-            goBackToList();
-        }
-    });
-}
+    // Evento para limpiar filtros
+    const resetBtn = document.querySelector('button[type="reset"]');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', function() {
+            renderizarEstudiantes();
+        });
+    }
 
-// Inicializar cuando el DOM esté listo
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-} else {
-    init();
+    // Botón nuevo estudiante
+    const btnNewStudent = document.getElementById('btn-new-student');
+    if (btnNewStudent) {
+        btnNewStudent.addEventListener('click', function() {
+            // Mostrar formulario vacío para nuevo estudiante
+            document.getElementById('student-list').hidden = true;
+            document.getElementById('student-detail').hidden = false;
+            document.getElementById('student-form').reset();
+            document.getElementById('student-code').value = 'Nuevo';
+            window.scrollTo(0, 0);
+        });
+    }
 }
