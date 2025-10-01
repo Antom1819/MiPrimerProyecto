@@ -1,8 +1,3 @@
-// ==========================================
-// data.js - Datos de estudiantes
-// Este archivo contiene todos los datos de los estudiantes
-// en formato JavaScript (simulando un JSON)
-// ==========================================
 
 const estudiantes = [
     {

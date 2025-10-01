@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de administración de estudiantes QUIPUX">
+    <title>QUIPUX - Administración de estudiantes</title>
+    <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+    <nav aria-label="Navegación principal">
+        <h1>QUIPUX</h1>
+        <ul>
+            <li><a href="#estudiantes" aria-current="page">Estudiantes</a></li>
+            <li><a href="#grupos">Grupos</a></li>
+            <li><a href="#materias">Materias</a></li>
+            <li><a href="#evaluaciones">Evaluaciones</a></li>
+            <li><a href="#informes">Informes</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <header>
+            <p>Carolina Fernández Echeverry</p>
+            <button class="user-btn" aria-label="Menú de usuario">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="8" r="4"/>
+                    <path d="M4 20c0-4 3-6 8-6s8 2 8 6"/>
+                </svg>
+            </button>
+        </header>
+
+        <section id="student-list">
+            <header>
+                <h2>Administración de estudiantes</h2>
+                <button class="btn-primary" id="btn-new-student">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="10" cy="10" r="9"/>
+                        <path d="M10 5v10M5 10h10"/>
+                    </svg>
+                    Nuevo registro
+                </button>
+            </header>
+
+            <form role="search" aria-label="Filtros de búsqueda">
+                <p>
+                    <label for="filter-grade">Grado</label>
+                    <select id="filter-grade" name="grade">
+                        <option value="">Seleccionar</option>
+                    </select>
+                </p>
+
+                <p>
+                    <label for="filter-group">Grupo</label>
+                    <select id="filter-group" name="group">
+                        <option value="">Seleccionar</option>
+                    </select>
+                </p>
+
+                <p>
+                    <label for="filter-id-type">Identificación</label>
+                    <select id="filter-id-type" name="idType">
+                        <option value="TI">TI</option>
+                        <option value="CC">CC</option>
+                    </select>
+                </p>
+
+                <p>
+                    <label for="filter-id-number" class="sr-only">Número de documento</label>
+                    <input type="text" id="filter-id-number" name="idNumber" placeholder="Número documento">
+                </p>
+
+                <p>
+                    <label for="filter-student">Estudiante</label>
+                    <select id="filter-student" name="student">
+                        <option value="">Seleccionar</option>
+                    </select>
+                </p>
+
+                <button type="submit">Buscar</button>
+                <button type="reset">Limpiar filtros</button>
+            </form>
+
+            <article>
+                <header class="results-header">
+                    <h3>Resultados</h3>
+                    <p>
+                        <label for="items-per-page">Mostrar</label>
+                        <select id="items-per-page" name="itemsPerPage">
+                            <option value="4">4</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                    </p>
+                </header>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                <button type="button" aria-label="Ordenar por código">
+                                    Código
+                                    <span aria-hidden="true">↕</span>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" aria-label="Ordenar por identificación">
+                                    Identificación
+                                    <span aria-hidden="true">↕</span>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" aria-label="Ordenar por estudiante">
+                                    Estudiante
+                                    <span aria-hidden="true">↕</span>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" aria-label="Ordenar por grado">
+                                    Grado
+                                    <span aria-hidden="true">↕</span>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" aria-label="Ordenar por grupo">
+                                    Grupo
+                                    <span aria-hidden="true">↕</span>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" aria-label="Ordenar por estado">
+                                    Estado
+                                    <span aria-hidden="true">↕</span>
+                                </button>
+                            </th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="students-tbody">
+                    </tbody>
+                </table>
+
+                <nav class="pagination" aria-label="Paginación">
+                    <p>Mostrando 1 al 5 de 150 registros</p>
+                    <ul>
+                        <li><button type="button" disabled>Primero</button></li>
+                        <li><button type="button" aria-current="page">1</button></li>
+                        <li><button type="button">3</button></li>
+                        <li><button type="button">4</button></li>
+                        <li><button type="button">5</button></li>
+                        <li><button type="button">Último</button></li>
+                    </ul>
+                </nav>
+            </article>
+        </section>
+
+        <section id="student-detail" hidden>
+            <nav aria-label="Breadcrumb">
+                <ol class="breadcrumb">
+                    <li><a href="#" id="back-to-list">Administración de estudiantes</a></li>
+                    <li aria-current="page">Estudiante</li>
+                </ol>
+            </nav>
+
+            <h2>Información del estudiante</h2>
+
+            <form id="student-form" class="form-grid">
+                <fieldset>
+                    <legend class="sr-only">Datos personales</legend>
+                    
+                    <p>
+                        <label for="student-code">Código</label>
+                        <input type="text" id="student-code" name="code" readonly>
+                    </p>
+
+                    <p>
+                        <label for="student-id-type">Identificación</label>
+                        <select id="student-id-type" name="idType" required>
+                            <option value="TI">TI</option>
+                            <option value="CC">CC</option>
+                        </select>
+                    </p>
+
+                    <p>
+                        <label for="student-id-number" class="sr-only">Número de documento</label>
+                        <input type="text" id="student-id-number" name="idNumber" placeholder="Número documento" required>
+                    </p>
+
+                    <p>
+                        <label for="student-first-name">Primer nombre</label>
+                        <input type="text" id="student-first-name" name="firstName" placeholder="Ingrese el primer nombre" required>
+                    </p>
+
+                    <p>
+                        <label for="student-second-name">Segundo nombre <span class="optional">(Opcional)</span></label>
+                        <input type="text" id="student-second-name" name="secondName" placeholder="Ingrese el segundo nombre">
+                    </p>
+
+                    <p>
+                        <label for="student-first-surname">Primer apellido</label>
+                        <input type="text" id="student-first-surname" name="firstSurname" placeholder="Ingrese el primer apellido" required>
+                    </p>
+
+                    <p>
+                        <label for="student-second-surname">Segundo apellido</label>
+                        <input type="text" id="student-second-surname" name="secondSurname" placeholder="Ingrese el segundo apellido">
+                    </p>
+
+                    <fieldset>
+                        <legend>Sexo</legend>
+                        <p class="radio-group">
+                            <label>
+                                <input type="radio" name="gender" value="F" required>
+                                Femenino
+                            </label>
+                            <label>
+                                <input type="radio" name="gender" value="M">
+                                Masculino
+                            </label>
+                        </p>
+                    </fieldset>
+
+                    <p>
+                        <label for="student-birthdate">Fecha de nacimiento</label>
+                        <input type="date" id="student-birthdate" name="birthdate" required>
+                    </p>
+
+                    <p>
+                        <label for="student-phone">Teléfono residencia <span class="optional">(Opcional)</span></label>
+                        <input type="tel" id="student-phone" name="phone" placeholder="Ingrese el número">
+                    </p>
+
+                    <p>
+                        <label for="student-mobile">Celular</label>
+                        <input type="tel" id="student-mobile" name="mobile" placeholder="Ingrese el número" required>
+                    </p>
+
+                    <p>
+                        <label for="student-email">Correo electrónico</label>
+                        <input type="email" id="student-email" name="email" placeholder="Ej. prueba@correo.com" required>
+                    </p>
+
+                    <p>
+                        <label for="student-city">Ciudad de residencia</label>
+                        <select id="student-city" name="city" required>
+                            <option value="">Seleccionar</option>
+                            <option value="Medellín">Medellín</option>
+                            <option value="Bogotá">Bogotá</option>
+                            <option value="Cali">Cali</option>
+                        </select>
+                    </p>
+
+                    <p style="grid-column: 1 / -1">
+                        <label for="student-address">Dirección de residencia</label>
+                        <input type="text" id="student-address" name="address" placeholder="Ej. Carrera 12 #45-78 Piso 2" required>
+                    </p>
+
+                    <p>
+                        <label for="student-grade">Grado</label>
+                        <select id="student-grade" name="grade" required>
+                            <option value="">Seleccionar</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                        </select>
+                    </p>
+
+                    <p>
+                        <label for="student-group">Grupo</label>
+                        <select id="student-group" name="group" required>
+                            <option value="">Seleccionar</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                        </select>
+                    </p>
+                </fieldset>
+            </form>
+
+            <article>
+                <header class="results-header">
+                    <h3>Cursos realizados</h3>
+                    <p>
+                        <label for="courses-per-page">Mostrar</label>
+                        <select id="courses-per-page" name="coursesPerPage">
+                            <option value="4">4</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                        </select>
+                    </p>
+                </header>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                <button type="button" aria-label="Ordenar por código">
+                                    Código
+                                    <span aria-hidden="true">↕</span>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" aria-label="Ordenar por año">
+                                    Año
+                                    <span aria-hidden="true">↕</span>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" aria-label="Ordenar por grado">
+                                    Grado
+                                    <span aria-hidden="true">↕</span>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" aria-label="Ordenar por grupo">
+                                    Grupo
+                                    <span aria-hidden="true">↕</span>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" aria-label="Ordenar por estado">
+                                    Estado
+                                    <span aria-hidden="true">↕</span>
+                                </button>
+                            </th>
+                            <th scope="col">
+                                <button type="button" aria-label="Ordenar por nota promedio">
+                                    Nota promedio
+                                    <span aria-hidden="true">↕</span>
+                                </button>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="courses-tbody">
+                    </tbody>
+                </table>
+            </article>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

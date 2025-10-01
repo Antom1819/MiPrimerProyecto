@@ -1,4 +1,6 @@
-// Estado
+// app.js - Funcionalidad principal de la aplicación
+
+// Estado de la aplicación
 const appState = {
     currentView: 'list',
     currentStudent: null,
@@ -8,7 +10,7 @@ const appState = {
     coursesPerPage: 4
 };
 
-//DOM
+// Elementos del DOM
 const elements = {
     studentListView: document.getElementById('studentListView'),
     studentDetailView: document.getElementById('studentDetailView'),
@@ -21,6 +23,7 @@ const elements = {
     coursesPerPage: document.getElementById('coursesPerPage')
 };
 
+// Inicializar la aplicación
 function init() {
     renderStudentList();
     attachEventListeners();
